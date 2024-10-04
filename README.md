@@ -11,3 +11,11 @@ This project implements object tracking between two images using SAM2 (Segment A
 
    ```bash
    git clone https://github.com/yourusername/SAM2_Object_Tracking.git
+
+2. Install the required dependencies:
+
+   pip install -r requirements.txt
+
+3. Download the SAM2 model checkpoint and place it in the checkpoints/ directory.
+
+4. Place your input images in the images/ directory.
