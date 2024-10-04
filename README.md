@@ -41,4 +41,11 @@ or individually from:
 
 Then SAM 2 can be used in a few lines as follows for image and video prediction.
 
+### Usage
+
+Run the sam2_tracking.py script to track objects between two images:
+
+```bash
+python sam2_tracking.py
+```
 
