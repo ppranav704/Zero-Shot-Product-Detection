@@ -11,6 +11,35 @@ from sam2.automatic_mask_generator import SAM2AutomaticMaskGenerator
 from utils import create_if_not_exists, cleardir, show_mask
 
 
+def extract_bounding_box_from_mask(mask_image_path):
+    """
+    Extract the bounding box coordinates from a binary mask image.
+
+    Parameters:
+        mask_image_path (str): Path to the mask image file.
+
+    Returns:
+        tuple: Bounding box coordinates (xmin, ymin, xmax, ymax).
+    """
+    # Open the mask image
+    mask = Image.open(mask_image_path).convert('L')  # Convert to grayscale
+
+    # Convert the image to a numpy array
+    mask_np = np.array(mask)
+
+    # Find the non-zero regions (i.e., the object in the mask)
+    non_zero_indices = np.nonzero(mask_np)
+
+    if len(non_zero_indices[0]) == 0 or len(non_zero_indices[1]) == 0:
+        raise ValueError(f"No object found in the mask: {mask_image_path}")
+
+    # Calculate the bounding box from the non-zero indices
+    ymin, ymax = np.min(non_zero_indices[0]), np.max(non_zero_indices[0])
+    xmin, xmax = np.min(non_zero_indices[1]), np.max(non_zero_indices[1])
+
+    return xmin, ymin, xmax, ymax
+
+
 # Function to track objects between two images using bounding boxes
 def track_item_boxes(imgpath1, imgpath2, img1boxclasslist, model_cfg, checkpoint, tempfolder='./tempdir', visualize=True):
     """
@@ -106,14 +135,20 @@ def visualize_tracking_results(tempfolder, video_segments, xmin, ymin, xmax, yma
 
 
 if __name__ == "__main__":
-    # Paths for the input images and bounding box coordinates
-    firstimgpath = '/data_2D/can_chowder_000001.jpg'
-    secondimgpath = '/data_2D/can_chowder_000002.jpg'
-    model_cfg = "configs/sam2.1_hiera_l.yaml"  # Configuration file for SAM2
-    checkpoint = "/checkpoints/sam2.1_hiera_large.pt"  # Model checkpoint
+    # Example paths for the input images and mask
+    firstimgpath = './data_2D/can_chowder_000001.jpg'
+    secondimgpath = './data_2D/can_chowder_000002.jpg'
+    mask_img_path = './data_2D/can_chowder_000001_1_gt.png'
+    
+    model_cfg = "./configs/sam2_hiera_t.yaml"  # Configuration file for SAM2
+    checkpoint = "./checkpoints/sam2_hiera_tiny.pt"  # Model checkpoint
 
-    # Example bounding box coordinates (xmin, xmax, ymin, ymax)
-    img1boxclasslist = [([100, 200, 100, 200], 1)]  
+    # Extract the bounding box from the mask image
+    bbox = extract_bounding_box_from_mask(mask_img_path)
+    print(f"Bounding Box Coordinates: {bbox}")
+
+    # Actual values from the mask
+    img1boxclasslist = [(bbox, 1)]  # Use the bounding box extracted from the mask
 
     # Run the object tracking between two images
     track_item_boxes(firstimgpath, secondimgpath, img1boxclasslist, model_cfg, checkpoint)
