@@ -109,8 +109,8 @@ if __name__ == "__main__":
     # Paths for the input images and bounding box coordinates
     firstimgpath = '/data_2D/can_chowder_000001.jpg'
     secondimgpath = '/data_2D/can_chowder_000002.jpg'
-    model_cfg = "configs/sam2.1/sam2.1_hiera_l.yaml"  # Configuration file for SAM2
-    checkpoint = "/content/sam2/checkpoints/sam2.1_hiera_large.pt"  # Model checkpoint
+    model_cfg = "configs/sam2.1_hiera_l.yaml"  # Configuration file for SAM2
+    checkpoint = "/checkpoints/sam2.1_hiera_large.pt"  # Model checkpoint
 
     # Example bounding box coordinates (xmin, xmax, ymin, ymax)
     img1boxclasslist = [([100, 200, 100, 200], 1)]  
